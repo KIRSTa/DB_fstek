@@ -70,10 +70,10 @@ try:
     with connection.cursor() as cursor:
         cursor.execute("""CREATE TABLE IF NOT EXISTS data (
     id serial PRIMARY KEY,
-    BDU TEXT,
-    DESCRYPTION TEXT,
-    VULNERABILITY_SYSTEM_INDENTIFIERS TEXT,
-    LINK TEXT
+    BDU TEXT NOT NULL,
+    DESCRYPTION TEXT NOT NULL,
+    VULNERABILITY_SYSTEM_INDENTIFIERS TEXT NOT NULL,
+    LINK TEXT NOT NULL
 
 );""")
         print("[INFO] Table create successfully!")
@@ -81,7 +81,7 @@ try:
     with connection.cursor() as cursor:
         for bdu,name,cwe in zip(bdus,names,cwes):
             data_site=(bdu.text ,name.text[1:-1],cwe ,'https://bdu.fstec.ru'+bdu.get('href'))
-            cursor.execute('''INSERT INTO data(BDU,DESCRYPTION,VULNERABILITY_SYSTEM_INDENTIFIERS,LINK) VALUES (?,?,?,?);''',data_site)
+            cursor.execute(f'''INSERT INTO data(BDU,DESCRYPTION,VULNERABILITY_SYSTEM_INDENTIFIERS,LINK) VALUES ('{bdu.text}', '{name.text[1:-1]}','{cwe}','{'https://bdu.fstec.ru'+bdu.get('href')}');'''.format(*data_site))
         print("[INFO] INSERT successfully")  
     
 
