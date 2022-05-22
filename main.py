@@ -1,4 +1,3 @@
-
 import psycopg2
 import requests
 
@@ -6,6 +5,20 @@ from config import host,user,password,db_name
 from bs4 import BeautifulSoup
 
 
+connection=psycopg2.connect(
+        host="127.0.0.1",
+        user="postgres",
+        password="postgres",
+        database="postgres"
+        )
+connection.autocommit=True
+with connection.cursor() as cursor:
+        cursor.execute(
+            "CREATE DATABASE fstek;"
+        )
+        
+        print("[INFO] DATDABASE create successfully!") 
+   
 
 
 url='https://bdu.fstec.ru/vul'
@@ -51,8 +64,9 @@ for link in bdus:
 
 
 
-
+    
 try:
+    
     connection=psycopg2.connect(
         host=host,
         user=user,
@@ -67,7 +81,9 @@ try:
         )
         print(f"Server version: {cursor.fetchall}")
 
+   
     with connection.cursor() as cursor:
+       
         cursor.execute("""CREATE TABLE IF NOT EXISTS data (
     id serial PRIMARY KEY,
     BDU TEXT NOT NULL,
@@ -91,36 +107,12 @@ finally:
     connection.close()
     print("[INFO] PostgreSQL connection closed")
 
+with open ("pars.txt","w",encoding='UTF-8') as file:
+
+    for bdu,name,cwe in zip(bdus,names,cwes):
+        # print("======================================================================================")
+        # print(bdu.text,name.text,"https://bdu.fstec.ru"+bdu.get("href"),cwe)
 
 
+        file.write(f" {bdu.text} {name.text[1:-1]} {cwe} {'https://bdu.fstec.ru'+bdu.get('href')}\n") 
 
-
-
-
-
-
-
-
-
-
-
-
-# data_site=[f" {bdu.text} {name.text[1:-1]} {cwe} {'https://bdu.fstec.ru'+bdu.get('href')}"]
-
-
-
-# for bdu,name,cwe in zip(bdus,names,cwes):
-#     data_site=(bdu.text ,name.text[1:-1],cwe ,'https://bdu.fstec.ru'+bdu.get('href'))
-    
-#     sql.execute('''INSERT INTO data(BDU,DESCRYPTION,VULNERABILITY_SYSTEM_INDENTIFIERS,LINK) VALUES (?,?,?,?)''',data_site)
-#     db.commit()
-# sql.execute("SELECT * FROM data")
-# if sql.fetchall() is None:
-#     sql.execute(f'''INSERT INTO data(BDU,ОПИСАНИЕ, ИДЕНТИФИКАТОРЫ СИСТЕМ УЯЗВИМОСТЕЙ,ССЫЛКА) VALUES (?,?,?,?)''',data_site)
-#     db.commit()
-#     print('База данных создана')
-# else:
-#     print('Такакя база уже имеется')
-    
-# for value in sql.execute("SELECT * FROM data"):
-#     print(value)
