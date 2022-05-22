@@ -107,7 +107,7 @@ finally:
     connection.close()
     print("[INFO] PostgreSQL connection closed")
 
-with open ("pars.txt","w",encoding='UTF-8') as file:
+with open ("DB_fstek.txt","w",encoding='UTF-8') as file:
 
     for bdu,name,cwe in zip(bdus,names,cwes):
         # print("======================================================================================")
